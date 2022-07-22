@@ -27,6 +27,13 @@ public class UserValidator {
 
     private void emailValidator(String email) {
 
+        if (email == null) {
+
+            log.error("UserValidator: получен email null");
+
+            throw new InvalidUserEmailException("Email не может быть null");
+        }
+
         if (!StringUtils.hasText(email)) {
 
             log.error("UserValidator: получен пустой email");
@@ -40,14 +47,6 @@ public class UserValidator {
 
             throw new InvalidUserEmailException("Email должен содержать символ \"@\"");
         }
-
-        if (email == null) {
-
-            log.error("UserValidator: получен email null");
-
-            throw new InvalidUserEmailException("Email не может быть null");
-        }
-
     }
 
     private void nameValidator(String name) {
