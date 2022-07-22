@@ -48,7 +48,7 @@ public class ItemController {
     }
 
     @GetMapping("/{itemId}")
-    public ItemDto getItemById (@PathVariable Integer itemId) {
+    public ItemDto getItemById(@PathVariable Integer itemId) {
 
         log.info("ItemController: Получен запрос на получение данных о вещи с id={} ", itemId);
 
