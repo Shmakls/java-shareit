@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.user.exceptions.UserNotFoundException;
 import ru.practicum.shareit.user.service.UserService;
@@ -22,7 +21,7 @@ public class ItemController {
     private final UserService userService;
 
     @PostMapping
-    public ItemDto addItem (@RequestHeader("X-Sharer-User-Id") Integer userId,
+    public ItemDto addItem(@RequestHeader("X-Sharer-User-Id") Integer userId,
                          @RequestBody ItemDto itemDto) {
 
         if (!userService.isExists(userId) || userId == null) {
@@ -39,7 +38,7 @@ public class ItemController {
     }
 
     @PatchMapping("/{itemId}")
-    public ItemDto updateItem (@RequestHeader("X-Sharer-User-Id") Integer userId,
+    public ItemDto updateItem(@RequestHeader("X-Sharer-User-Id") Integer userId,
                             @RequestBody ItemDto itemDto, @PathVariable Integer itemId) {
 
         log.info("ItemController: получен запрос на обновление данных вещи {} с id={} ", itemDto.getName(), itemId);
@@ -58,7 +57,7 @@ public class ItemController {
     }
 
     @GetMapping
-    public List<ItemDto> getItemsListByOwnerId (@RequestHeader(value = "X-Sharer-User-Id", required = false, defaultValue = "-1") Integer userId) {
+    public List<ItemDto> getItemsListByOwnerId(@RequestHeader(value = "X-Sharer-User-Id", required = false, defaultValue = "-1") Integer userId) {
 
         if (userId == -1) {
 
@@ -79,7 +78,7 @@ public class ItemController {
     }
 
     @GetMapping("/search")
-    public List<ItemDto> searchItemForRentByText (@RequestParam String text) {
+    public List<ItemDto> searchItemForRentByText(@RequestParam String text) {
 
         log.info("ItemController: получен запрос на поиск доступных к аренде вещей с текстом \"{}\" ", text);
 

@@ -25,7 +25,7 @@ public class UserValidator {
 
     }
 
-    private void emailValidator (String email) {
+    private void emailValidator(String email) {
 
         if (!StringUtils.hasText(email)) {
 
@@ -50,7 +50,7 @@ public class UserValidator {
 
     }
 
-    private void nameValidator (String name) {
+    private void nameValidator(String name) {
 
         if (!StringUtils.hasText(name)) {
             log.error("UserValidator: получено пустое имя");

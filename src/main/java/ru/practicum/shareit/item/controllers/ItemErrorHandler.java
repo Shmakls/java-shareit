@@ -14,25 +14,25 @@ public class ItemErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public String invalidItemNameExceptionHandler (final InvalidItemNameException e) {
+    public String invalidItemNameExceptionHandler(final InvalidItemNameException e) {
         return "error: " + e.getMessage();
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public String invalidItemDescriptionExceptionHandler (final InvalidItemDescriptionException e) {
+    public String invalidItemDescriptionExceptionHandler(final InvalidItemDescriptionException e) {
         return "error: " + e.getMessage();
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public String invalidAvailableStatusExceptionHandler (final InvalidAvailableStatusException e) {
+    public String invalidAvailableStatusExceptionHandler(final InvalidAvailableStatusException e) {
         return "error: " + e.getMessage();
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.FORBIDDEN)
-    public String incorrectItemIdOwnerHandler (final IncorrectItemOwnerId e) {
+    public String incorrectItemIdOwnerHandler(final IncorrectItemOwnerId e) {
         return "error: " + e.getMessage();
     }
 

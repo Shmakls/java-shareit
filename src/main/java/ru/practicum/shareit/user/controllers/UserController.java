@@ -18,7 +18,7 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping
-    public UserDto addUser (@RequestBody UserDto userDto) {
+    public UserDto addUser(@RequestBody UserDto userDto) {
 
         log.info("UserController: Получен запрос на добавление нового пользователя {} ", userDto.getEmail());
 
@@ -27,7 +27,7 @@ public class UserController {
     }
 
     @PatchMapping("/{userId}")
-    public UserDto updateUser (@RequestBody UserDto userDto, @PathVariable Integer userId) {
+    public UserDto updateUser(@RequestBody UserDto userDto, @PathVariable Integer userId) {
 
         log.info("UserController: Получен запрос на обновление данных пользователя с id={} ", userId);
 
@@ -36,7 +36,7 @@ public class UserController {
     }
 
     @GetMapping("/{userId}")
-    public UserDto getUserById (@PathVariable Integer userId) {
+    public UserDto getUserById(@PathVariable Integer userId) {
 
         log.info("UserController: Получен запрос на получение пользователя с id={} ", userId);
 

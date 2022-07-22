@@ -7,7 +7,7 @@ import ru.practicum.shareit.user.model.User;
 @Component
 public class UserMapper {
 
-    public UserDto toDto (User user) {
+    public UserDto toDto(User user) {
 
         UserDto userDto = new UserDto();
 
@@ -22,7 +22,7 @@ public class UserMapper {
 
     }
 
-    public User fromDto (UserDto userDto) {
+    public User fromDto(UserDto userDto) {
 
         User user = new User();
 

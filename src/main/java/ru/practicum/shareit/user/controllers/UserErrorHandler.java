@@ -13,19 +13,19 @@ public class UserErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.CONFLICT)
-    public String userAlreadyExistsExceptionHandler (final UserAlreadyExistsException e) {
+    public String userAlreadyExistsExceptionHandler(final UserAlreadyExistsException e) {
         return "error: " + e.getMessage();
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public String userNotFoundExceptionHandler (final UserNotFoundException e) {
+    public String userNotFoundExceptionHandler(final UserNotFoundException e) {
         return "error: " + e.getMessage();
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public String invalidEmailExceptionHandler (final InvalidUserEmailException e) {
+    public String invalidEmailExceptionHandler(final InvalidUserEmailException e) {
         return "error: " + e.getMessage();
     }
 

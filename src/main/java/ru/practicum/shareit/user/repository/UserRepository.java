@@ -6,16 +6,16 @@ import java.util.List;
 
 public interface UserRepository {
 
-    User addUser (User user);
+    User addUser(User user);
 
-    User updateUser (User user);
+    User updateUser(User user);
 
-    void removeUserById (Integer userId);
+    void removeUserById(Integer userId);
 
-    List<User> findAll ();
+    List<User> findAll();
 
-    boolean isExists (Integer userId);
+    boolean isExists(Integer userId);
 
-    User getUserById (Integer userId);
+    User getUserById(Integer userId);
 
 }
