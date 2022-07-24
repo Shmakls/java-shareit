@@ -1,4 +1,4 @@
-package ru.practicum.shareit.item;
+package ru.practicum.shareit.item.validators;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -26,7 +26,7 @@ public class ItemValidator {
 
     private void nameValidator(String name) {
 
-        if (name == null || !StringUtils.hasText(name)) {
+        if (!StringUtils.hasText(name)) {
             log.error("ItemValidator: получено пустое имя");
             throw new InvalidItemNameException("Имя не может быть пустым или ровняться null");
         }
@@ -35,7 +35,7 @@ public class ItemValidator {
 
     private void descriptionValidator(String description) {
 
-        if (description == null || !StringUtils.hasText(description)) {
+        if (!StringUtils.hasText(description)) {
             log.error("ItemValidator: получено пустое описание");
             throw new InvalidItemDescriptionException("Описание не может быть пустым или ровняться null");
         }

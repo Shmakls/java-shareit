@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-import ru.practicum.shareit.item.ItemValidator;
+import ru.practicum.shareit.item.validators.ItemValidator;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.exceptions.IncorrectItemOwnerId;
 import ru.practicum.shareit.item.mapper.ItemMapper;

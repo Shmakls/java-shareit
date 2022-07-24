@@ -3,6 +3,7 @@ package ru.practicum.shareit.item.controllers;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.CommonService;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.user.exceptions.UserNotFoundException;
@@ -18,22 +19,13 @@ public class ItemController {
 
     private final ItemService itemService;
 
-    private final UserService userService;
+    private final CommonService commonService;
 
     @PostMapping
     public ItemDto addItem(@RequestHeader("X-Sharer-User-Id") Integer userId,
                          @RequestBody ItemDto itemDto) {
 
-        if (!userService.isExists(userId) || userId == null) {
-
-            log.info("ItemController: Пользователь не существует или некорректный id={} ", userId);
-
-            throw new UserNotFoundException("Пользователь не существует или некорректный id");
-        }
-
-        log.info("ItemController: получен запрос на добавление вещи {} пользователя с id={} ", itemDto.getName(), userId);
-
-        return itemService.addItem(userId, itemDto);
+        return commonService.addItem(userId, itemDto);
 
     }
 
