@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.user.exceptions.UserNotFoundException;
 import ru.practicum.shareit.user.mapper.UserMapper;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
@@ -30,7 +31,7 @@ public class UserServiceImpl implements UserService {
 
         userValidator.isValid(user);
 
-        user = userRepository.addUser(user);
+        user = userRepository.save(user);
 
         return userMapper.toDto(user);
 
@@ -41,7 +42,7 @@ public class UserServiceImpl implements UserService {
 
         User userUpdate = userMapper.fromDto(userDto);
 
-        User oldUser = userRepository.getUserById(userId);
+        User oldUser = userRepository.getReferenceById(userId);
 
         log.info("UserService: Пользователь с id={} будет обновлен", userId);
 
@@ -49,7 +50,7 @@ public class UserServiceImpl implements UserService {
 
         user.setId(userId);
 
-        user = userRepository.updateUser(user);
+        user = userRepository.save(user);
 
         return userMapper.toDto(user);
 
@@ -58,7 +59,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto getUserById(Integer userId) {
 
-        User user = userRepository.getUserById(userId);
+        if (!isExists(userId)) {
+            log.info("UserService: Пользователя с id={} в базе нет", userId);
+            throw new UserNotFoundException("Такого пользователя в базе нет");
+        }
+
+        User user = userRepository.getReferenceById(userId);
 
         return userMapper.toDto(user);
 
@@ -78,13 +84,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public void removeUserById(Integer userId) {
 
-        userRepository.removeUserById(userId);
+        userRepository.deleteById(userId);
 
     }
 
     @Override
     public boolean isExists(Integer userId) {
-        return userRepository.isExists(userId);
+        return userRepository.existsById(userId);
     }
 
     private User userConstructorToUpdate(User userUpdate, User oldUser) {

@@ -4,7 +4,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.CommonService;
+import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ItemDtoForGetItems;
+import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.service.ItemService;
 
 import java.util.List;
@@ -38,34 +41,24 @@ public class ItemController {
     }
 
     @GetMapping("/{itemId}")
-    public ItemDto getItemById(@PathVariable Integer itemId) {
+    public ItemDtoForGetItems getItemById(@RequestHeader("X-Sharer-User-Id") Integer userId,
+                                          @PathVariable Integer itemId) {
 
         log.info("ItemController: Получен запрос на получение данных о вещи с id={} ", itemId);
 
-        return itemService.getItemById(itemId);
+        return commonService.getItemById(itemId, userId);
 
     }
 
     @GetMapping
-    public List<ItemDto> getItemsListByOwnerId(@RequestHeader(value = "X-Sharer-User-Id", required = false, defaultValue = "-1") Integer userId) {
+    public List<ItemDtoForGetItems> getItemsListByOwnerId(@RequestHeader(value = "X-Sharer-User-Id", required = false, defaultValue = "-1") Integer userId) {
 
-        if (userId == -1) {
+        log.info("ItemController.getItemsListByOwnerId: Получен запрос на список вещей пользователя с id={}", userId);
 
-            log.info("ItemController: получен запрос на получение списка всех вещей");
-
-            return itemService.findAllItems();
-
-        } else {
-
-            log.info("ItemController: получен запрос на просмотр списка вещей своим владельцем с id={} ", userId);
-
-            return itemService.getItemsListByOwnerId(userId);
+        return commonService.getItemsListByOwnerId(userId);
 
         }
 
-
-
-    }
 
     @GetMapping("/search")
     public List<ItemDto> searchItemForRentByText(@RequestParam String text) {
@@ -73,6 +66,15 @@ public class ItemController {
         log.info("ItemController: получен запрос на поиск доступных к аренде вещей с текстом \"{}\" ", text);
 
         return itemService.searchItemForRentByText(text);
+
+    }
+
+    @PostMapping("/{itemId}/comment")
+    public CommentDto addCommentToItem(@RequestHeader("X-Sharer-User-Id") Integer authorId,
+                                       @PathVariable Integer itemId,
+                                       @RequestBody Comment comment) {
+
+        return commonService.addComment(comment, itemId, authorId);
 
     }
 

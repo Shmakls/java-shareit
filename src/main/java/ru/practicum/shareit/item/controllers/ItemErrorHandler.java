@@ -4,10 +4,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import ru.practicum.shareit.item.exceptions.IncorrectItemOwnerId;
-import ru.practicum.shareit.item.exceptions.InvalidAvailableStatusException;
-import ru.practicum.shareit.item.exceptions.InvalidItemDescriptionException;
-import ru.practicum.shareit.item.exceptions.InvalidItemNameException;
+import ru.practicum.shareit.booking.exceptions.Error;
+import ru.practicum.shareit.item.exceptions.*;
 
 @RestControllerAdvice
 public class ItemErrorHandler {
@@ -34,6 +32,22 @@ public class ItemErrorHandler {
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public String incorrectItemIdOwnerHandler(final IncorrectItemOwnerId e) {
         return "error: " + e.getMessage();
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public String itemNotFoundExceptionHandler(final ItemNotFoundException e) {return "error: " + e.getMessage(); }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    private Error invalidCommentTextExceptionHandler(final InvalidCommentTextException e) {
+        return new Error(e.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    private Error bookingForCommentNotFoundExceptionHandler(final BookingForCommentNotFoundException e) {
+        return new Error(e.getMessage());
     }
 
 }
