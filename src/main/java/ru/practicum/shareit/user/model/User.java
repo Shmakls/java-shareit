@@ -1,10 +1,7 @@
 package ru.practicum.shareit.user.model;
 
 import lombok.*;
-import org.hibernate.Hibernate;
-
 import javax.persistence.*;
-import java.util.Objects;
 
 @Data
 @Entity

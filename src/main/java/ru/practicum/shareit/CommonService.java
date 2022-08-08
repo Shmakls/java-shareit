@@ -159,7 +159,7 @@ public class CommonService {
                 .peek(x -> x.setAuthorName(userService.getUserById(x.getAuthorId()).getName()))
                 .collect(Collectors.toList()));
 
-        if(!item.getOwnerId().equals(userId)) {
+        if (!item.getOwnerId().equals(userId)) {
             return itemDtoForGetItems;
         }
 
@@ -286,7 +286,7 @@ public class CommonService {
         Comparator<BookingDto> comparator = (o1, o2) -> {
             if (o1.getStart().isBefore(o2.getStart())) {
                 return 1;
-            } else if (o1.getStart().isAfter(o2.getStart())){
+            } else if (o1.getStart().isAfter(o2.getStart())) {
                 return -1;
             } else {
                 return 0;
