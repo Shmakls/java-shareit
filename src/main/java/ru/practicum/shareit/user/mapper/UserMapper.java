@@ -4,6 +4,8 @@ import org.springframework.stereotype.Component;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
 
+import java.util.Optional;
+
 @Component
 public class UserMapper {
 
@@ -14,9 +16,7 @@ public class UserMapper {
         userDto.setEmail(user.getEmail());
         userDto.setName(user.getName());
 
-        if (user.getId() != null) {
-            userDto.setId(user.getId());
-        }
+        Optional.ofNullable(user.getId()).ifPresent(userDto::setId);
 
         return userDto;
 
@@ -29,9 +29,7 @@ public class UserMapper {
         user.setEmail(userDto.getEmail());
         user.setName(userDto.getName());
 
-        if (userDto.getId() != null) {
-            user.setId(userDto.getId());
-        }
+        Optional.ofNullable(userDto.getId()).ifPresent(user::setId);
 
         return user;
 

@@ -4,6 +4,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import ru.practicum.shareit.item.dto.ItemDtoForGetItems;
+import ru.practicum.shareit.item.exceptions.InvalidCommentTextException;
+import ru.practicum.shareit.item.exceptions.ItemNotFoundException;
+import ru.practicum.shareit.item.model.Comment;
+import ru.practicum.shareit.item.repository.CommentRepository;
 import ru.practicum.shareit.item.validators.ItemValidator;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.exceptions.IncorrectItemOwnerId;
@@ -22,6 +27,8 @@ public class ItemServiceImpl implements ItemService {
 
     private final ItemRepository itemRepository;
 
+    private final CommentRepository commentRepository;
+
     private final ItemMapper itemMapper;
 
     private final ItemValidator itemValidator;
@@ -31,11 +38,11 @@ public class ItemServiceImpl implements ItemService {
 
         Item item = itemMapper.fromDto(itemDto);
 
-        item.setOwner(userId);
+        item.setOwnerId(userId);
 
         itemValidator.isValid(item);
 
-        item = itemRepository.addItem(item);
+        item = itemRepository.save(item);
 
         return itemMapper.toDto(item);
 
@@ -46,9 +53,9 @@ public class ItemServiceImpl implements ItemService {
 
         Item updateItem = itemMapper.fromDto(itemDto);
 
-        Item oldItem = itemRepository.getItemById(itemId);
+        Item oldItem = itemRepository.getReferenceById(itemId);
 
-        if (!oldItem.getOwner().equals(userId)) {
+        if (!oldItem.getOwnerId().equals(userId)) {
             log.error("ItemService: вещь с id={} не принадлежит пользователю с id={}", itemId, userId);
             throw new IncorrectItemOwnerId("Нельзя редактировать не принадлежащую вам вещь");
         }
@@ -59,28 +66,30 @@ public class ItemServiceImpl implements ItemService {
 
         item.setId(itemId);
 
-        item = itemRepository.updateItem(item);
+        item = itemRepository.save(item);
 
         return itemMapper.toDto(item);
 
     }
 
     @Override
-    public ItemDto getItemById(Integer itemId) {
+    public Item getItemById(Integer itemId) {
 
-        Item item = itemRepository.getItemById(itemId);
+        if (!itemRepository.existsById(itemId)) {
+            log.error("ItemService: Вещи с id={} в базе нет", itemId);
+            throw new ItemNotFoundException("Такой вещи в базе нет");
+        }
 
-        return itemMapper.toDto(item);
+        return itemRepository.getReferenceById(itemId);
+
     }
 
     @Override
-    public List<ItemDto> getItemsListByOwnerId(Integer userId) {
+    public List<Item> getItemsListByOwnerId(Integer userId) {
 
         log.info("ItemService: направляю запрос в ItemDb для получения списка вещей владельца с id={} ", userId);
 
-        return itemRepository.getItemListByOwnerId(userId).stream()
-                .map(itemMapper::toDto)
-                .collect(Collectors.toList());
+        return itemRepository.findItemsByOwnerId(userId);
 
     }
 
@@ -93,20 +102,47 @@ public class ItemServiceImpl implements ItemService {
         } else {
             log.info("ItemService: направляю запрос в ItemDb для поиска вещей содержащих текст \"{}\"", text);
             return itemRepository.searchItemForRentByText(text).stream()
+                    .filter(x -> x.getAvailable().equals(true))
                     .map(itemMapper::toDto)
                     .collect(Collectors.toList());
         }
     }
 
     @Override
-    public List<ItemDto> findAllItems() {
+    public List<ItemDtoForGetItems> findAllItems() {
 
         List<Item> items = itemRepository.findAll();
 
-        return items.stream().map(itemMapper::toDto)
+        return items.stream().map(itemMapper::fromDtoToFindAll)
                 .collect(Collectors.toList());
 
     }
+
+    @Override
+    public Boolean isExist(Integer itemId) {
+        return itemRepository.existsById(itemId);
+    }
+
+    @Override
+    public Comment addComment(Comment comment, Integer itemId, Integer authorId) {
+
+        if (!StringUtils.hasText(comment.getText())) {
+            log.error("ItemService.addComment: текст комментария пустой или равен null");
+            throw new InvalidCommentTextException("Текст коммента пустой или равено null");
+        }
+
+        comment.setItemId(itemId);
+        comment.setAuthorId(authorId);
+
+        return commentRepository.save(comment);
+
+    }
+
+    @Override
+    public List<Comment> getCommentsByItemId(Integer itemId) {
+        return commentRepository.findCommentsByItemId(itemId);
+    }
+
 
     private Item itemConstructorToUpdate(Item updateItem, Item oldItem) {
 
@@ -130,20 +166,16 @@ public class ItemServiceImpl implements ItemService {
             item.setAvailable(oldItem.getAvailable());
         }
 
-        if (updateItem.getRentCount() != null) {
-            item.setRentCount(updateItem.getRentCount());
+        if (updateItem.getOwnerId() != null) {
+            item.setOwnerId(updateItem.getOwnerId());
         } else {
-            item.setRentCount(oldItem.getRentCount());
-        }
-
-        if (updateItem.getOwner() != null) {
-            item.setOwner(updateItem.getOwner());
-        } else {
-            item.setOwner(oldItem.getOwner());
+            item.setOwnerId(oldItem.getOwnerId());
         }
 
         return item;
 
     }
+
+
 
 }
