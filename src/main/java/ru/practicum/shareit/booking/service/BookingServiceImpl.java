@@ -12,7 +12,6 @@ import ru.practicum.shareit.booking.model.BookingStatus;
 import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.booking.validators.BookingValidator;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,7 +31,7 @@ public class BookingServiceImpl implements BookingService {
 
         Booking bookingChecker = bookingRepository.findBookingByBookerIdAndItemId(bookerId, booking.getItemId());
 
-        if (bookingChecker != null && bookingChecker.getStatus().equals(BookingStatus.REJECTED)) {
+        if (bookingChecker != null && bookingChecker.getStatus() == BookingStatus.REJECTED) {
                 throw new RepeatRequestException("Повторное бронирование делать нельзя");
             }
 
@@ -82,15 +81,7 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public List<BookingDto> findBookingsByIdItemsList(List<Integer> itemsId) {
 
-        List<Booking> bookings = new ArrayList<>();
-
-        for (Integer item : itemsId) {
-
-            bookings.addAll(bookingRepository.findBookingsByItemId(item));
-
-        }
-
-        return bookings.stream().map(bookingMapper::toDto).collect(Collectors.toList());
+        return bookingRepository.findBookingsByItemIdIn(itemsId).stream().map(bookingMapper::toDto).collect(Collectors.toList());
 
     }
 

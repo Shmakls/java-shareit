@@ -6,6 +6,8 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDtoForGetItems;
 import ru.practicum.shareit.item.model.Item;
 
+import java.util.Optional;
+
 @Component
 public class ItemMapper {
 
@@ -17,13 +19,9 @@ public class ItemMapper {
         itemDto.setDescription(item.getDescription());
         itemDto.setAvailable(item.getAvailable());
 
-        if (item.getId() != null) {
-            itemDto.setId(item.getId());
-        }
+        Optional.ofNullable(item.getId()).ifPresent(itemDto::setId);
 
-        if (item.getOwnerId() != null) {
-            itemDto.setOwner(item.getOwnerId());
-        }
+        Optional.ofNullable(item.getOwnerId()).ifPresent(itemDto::setOwner);
 
         return itemDto;
 
@@ -37,13 +35,9 @@ public class ItemMapper {
         item.setDescription(itemDto.getDescription());
         item.setAvailable(itemDto.getAvailable());
 
-        if (itemDto.getId() != null) {
-            item.setId(itemDto.getId());
-        }
+        Optional.ofNullable(itemDto.getId()).ifPresent(item::setId);
 
-        if (itemDto.getOwner() != null) {
-            item.setOwnerId(itemDto.getOwner());
-        }
+        Optional.ofNullable(itemDto.getOwner()).ifPresent(item::setOwnerId);
 
         return item;
 

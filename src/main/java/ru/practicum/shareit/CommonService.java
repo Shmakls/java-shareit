@@ -337,7 +337,7 @@ public class CommonService {
                         .collect(Collectors.toList());
 
             default:
-                log.error("CommonService.getAllBookingsByBookerIdDesc: Неверный параметр state={}", state);
+                log.error("CommonService.getBookingDto: Неверный параметр state={}", state);
                 throw new IncorrectStateException("Unknown state: " + state);
 
         }

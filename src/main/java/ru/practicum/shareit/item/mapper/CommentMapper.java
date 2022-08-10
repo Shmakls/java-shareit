@@ -4,6 +4,8 @@ import org.springframework.stereotype.Component;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.model.Comment;
 
+import java.util.Optional;
+
 @Component
 public class CommentMapper {
 
@@ -15,9 +17,7 @@ public class CommentMapper {
         commentDto.setText(comment.getText());
         commentDto.setAuthorId(comment.getAuthorId());
 
-        if (comment.getId() != null) {
-            commentDto.setId(comment.getId());
-        }
+        Optional.ofNullable(comment.getId()).ifPresent(commentDto::setId);
 
         return commentDto;
 

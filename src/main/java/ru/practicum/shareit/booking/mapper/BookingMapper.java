@@ -6,6 +6,8 @@ import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.ItemShortForResponse;
 import ru.practicum.shareit.booking.model.Booking;
 
+import java.util.Optional;
+
 @Component
 public class BookingMapper {
 
@@ -19,9 +21,7 @@ public class BookingMapper {
         bookingDto.setItem(new ItemShortForResponse(booking.getItemId()));
         bookingDto.setBooker(new Booker(booking.getBookerId()));
 
-        if (booking.getId() != null) {
-            bookingDto.setId(booking.getId());
-        }
+        Optional.ofNullable(booking.getId()).ifPresent(bookingDto::setId);
 
         return bookingDto;
 
@@ -37,9 +37,7 @@ public class BookingMapper {
         booking.setItemId(bookingDto.getItem().getId());
         booking.setStatus(bookingDto.getStatus());
 
-        if (bookingDto.getId() != null) {
-            booking.setId(bookingDto.getId());
-        }
+        Optional.ofNullable(bookingDto.getId()).ifPresent(booking::setId);
 
         return booking;
 
