@@ -3,7 +3,7 @@ package ru.practicum.shareit.item.dto;
 import lombok.Data;
 
 @Data
-public class ItemDto {
+public class ItemDtoForItemRequestDto {
 
     private Integer id;
 
@@ -11,11 +11,9 @@ public class ItemDto {
 
     private String description;
 
+    private Integer ownerId;
+
     private Boolean available;
-
-    private Integer owner;
-
-    private Integer rentCount;
 
     private Integer requestId;
 

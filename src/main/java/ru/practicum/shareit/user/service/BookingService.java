@@ -1,4 +1,4 @@
-package ru.practicum.shareit.booking.service;
+package ru.practicum.shareit.user.service;
 
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.model.Booking;
@@ -15,7 +15,7 @@ public interface BookingService {
 
     BookingDto updateBookingStatus(BookingDto bookingDto);
 
-    List<BookingDto> findBookingsByBookerId(Integer bookerId);
+    List<BookingDto> findBookingsByBookerId(Integer bookerId,Integer from, Integer size);
 
     List<BookingDto> findBookingsByIdItemsList(List<Integer> itemsId);
 

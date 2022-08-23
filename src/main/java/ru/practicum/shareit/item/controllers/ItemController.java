@@ -3,7 +3,7 @@ package ru.practicum.shareit.item.controllers;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.CommonService;
+import ru.practicum.shareit.common.CommonService;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDtoForGetItems;
@@ -51,21 +51,25 @@ public class ItemController {
     }
 
     @GetMapping
-    public List<ItemDtoForGetItems> getItemsListByOwnerId(@RequestHeader(value = "X-Sharer-User-Id", required = false, defaultValue = "-1") Integer userId) {
+    public List<ItemDtoForGetItems> getItemsListByOwnerId(@RequestHeader(value = "X-Sharer-User-Id", required = false, defaultValue = "-1") Integer userId,
+                                                          @RequestParam(required = false, defaultValue = "0") Integer from,
+                                                          @RequestParam(required = false, defaultValue = "20") Integer size) {
 
         log.info("ItemController.getItemsListByOwnerId: Получен запрос на список вещей пользователя с id={}", userId);
 
-        return commonService.getItemsListByOwnerId(userId);
+        return commonService.getItemsListByOwnerId(userId, from, size);
 
         }
 
 
     @GetMapping("/search")
-    public List<ItemDto> searchItemForRentByText(@RequestParam String text) {
+    public List<ItemDto> searchItemForRentByText(@RequestParam String text,
+                                                 @RequestParam(required = false, defaultValue = "0") Integer from,
+                                                 @RequestParam(required = false, defaultValue = "20") Integer size) {
 
         log.info("ItemController: получен запрос на поиск доступных к аренде вещей с текстом \"{}\" ", text);
 
-        return itemService.searchItemForRentByText(text);
+        return itemService.searchItemForRentByText(text, from, size);
 
     }
 
