@@ -1,4 +1,4 @@
-package ru.practicum.shareit.user.service;
+package ru.practicum.shareit.booking.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -75,7 +75,7 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public List<BookingDto> findBookingsByBookerId(Integer bookerId, Integer from, Integer size) {
 
-        Pageable pageable = PageRequest.of(from/size, size);
+        Pageable pageable = PageRequest.of(from / size, size);
 
         return bookingRepository.findBookingsByBookerId(bookerId, pageable).getContent()
                 .stream()

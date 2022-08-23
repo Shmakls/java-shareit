@@ -54,7 +54,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     @Override
     public Page<ItemRequestDto> findItemRequestsByPages(Integer requestorId, Integer from, Integer size) {
 
-        int page = from/size;
+        int page = from / size;
 
         Pageable pageable = PageRequest.of(page, size, Sort.by("created").descending());
 

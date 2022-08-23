@@ -92,7 +92,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public List<Item> getItemsListByOwnerId(Integer userId, Integer from, Integer size) {
 
-        int page = from/size;
+        int page = from / size;
 
         Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
 
@@ -120,7 +120,7 @@ public class ItemServiceImpl implements ItemService {
             return new ArrayList<>();
         } else {
             log.info("ItemService: направляю запрос в ItemDb для поиска вещей содержащих текст \"{}\"", text);
-            Pageable pageable = PageRequest.of(from/size, size, Sort.by("id").ascending());
+            Pageable pageable = PageRequest.of(from / size, size, Sort.by("id").ascending());
             return itemRepository.searchItemForRentByText(text, pageable).stream()
                     .filter(x -> x.getAvailable().equals(true))
                     .map(itemMapper::toDto)
@@ -131,7 +131,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public List<ItemDtoForGetItems> findAllItems(Integer from, Integer size) {
 
-        int page = from/size;
+        int page = from / size;
 
         Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
 
