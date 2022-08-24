@@ -414,16 +414,16 @@ class CommonServiceTest {
 
         final UserNotFoundException userNotFoundExceptionByGetAll = assertThrows(
                 UserNotFoundException.class,
-                () -> commonService.getAllBookingsByItemOwnerId(99, "ALL")
+                () -> commonService.getAllBookingsByItemOwnerId(99, "ALL", 0, 20)
         );
 
         assertEquals("Такого пользователя в базе нет", userNotFoundExceptionByGetAll.getMessage());
 
-        List<BookingDto> noBookingsForUser = commonService.getAllBookingsByItemOwnerId(3, "ALL");
+        List<BookingDto> noBookingsForUser = commonService.getAllBookingsByItemOwnerId(3, "ALL", 0, 20);
 
         assertEquals(0, noBookingsForUser.size());
 
-        List<BookingDto> bookingsByUser1 = commonService.getAllBookingsByItemOwnerId(1, "ALL");
+        List<BookingDto> bookingsByUser1 = commonService.getAllBookingsByItemOwnerId(1, "ALL", 0, 20);
 
         assertEquals(3, bookingsByUser1.size());
 

@@ -132,7 +132,7 @@ class BookingControllerTest {
     @Test
     void getAllBookingsByItemOwnerId() throws Exception {
 
-        when(commonService.getAllBookingsByItemOwnerId(anyInt(), anyString()))
+        when(commonService.getAllBookingsByItemOwnerId(anyInt(), anyString(), anyInt(), anyInt()))
                 .thenReturn(List.of(bookingDto1));
 
         mvc.perform(get("/bookings/owner")

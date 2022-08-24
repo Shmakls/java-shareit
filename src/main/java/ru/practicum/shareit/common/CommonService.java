@@ -259,16 +259,26 @@ public class CommonService {
             throw new UserNotFoundException("Такого пользователя в базе нет");
         }
 
+        if (size < 1 || from < 0) {
+            log.error("Параметр size={} или from={} неверны", size, from);
+            throw new InvalidParametersException("Параметр size или from некорректный");
+        }
+
         List<BookingDto> bookingsByBookerId = bookingService.findBookingsByBookerId(bookerId, from, size);
 
         return getBookingDtos(state, bookingsByBookerId);
     }
 
-    public List<BookingDto> getAllBookingsByItemOwnerId(Integer ownerId, String state) {
+    public List<BookingDto> getAllBookingsByItemOwnerId(Integer ownerId, String state, Integer from, Integer size) {
 
         if (!userService.isExists(ownerId)) {
             log.error("CommonService.getAllBookingsByItemOwnerId: пользователя с id={} в базе нет", ownerId);
             throw new UserNotFoundException("Такого пользователя в базе нет");
+        }
+
+        if (size < 1 || from < 0) {
+            log.error("Параметр size={} или from={} неверны", size, from);
+            throw new InvalidParametersException("Параметр size или from некорректный");
         }
 
         List<Item> itemsByOwnerId = itemService.getItemsListByOwnerId(ownerId);
@@ -281,7 +291,7 @@ public class CommonService {
                 .map(Item::getId)
                 .collect(Collectors.toList());
 
-        List<BookingDto> bookingsByItemOwnerId = bookingService.findBookingsByIdItemsList(itemsIdByOwnerId);
+        List<BookingDto> bookingsByItemOwnerId = bookingService.findBookingsByIdItemsList(itemsIdByOwnerId, from, size);
 
         return getBookingDtos(state, bookingsByItemOwnerId);
 

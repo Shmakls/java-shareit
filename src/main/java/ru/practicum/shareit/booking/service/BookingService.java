@@ -17,7 +17,7 @@ public interface BookingService {
 
     List<BookingDto> findBookingsByBookerId(Integer bookerId,Integer from, Integer size);
 
-    List<BookingDto> findBookingsByIdItemsList(List<Integer> itemsId);
+    List<BookingDto> findBookingsByIdItemsList(List<Integer> itemsId, Integer from, Integer size);
 
     List<Booking> findBookingsByItemId(Integer itemId);
 }

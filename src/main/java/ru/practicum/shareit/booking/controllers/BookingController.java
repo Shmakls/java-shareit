@@ -52,9 +52,11 @@ public class BookingController {
 
     @GetMapping("/owner")
     public List<BookingDto> getAllBookingsByItemOwnerId(@RequestHeader("X-Sharer-User-Id") Integer ownerId,
-                                                        @RequestParam(required = false, defaultValue = "ALL") String state) {
+                                                        @RequestParam(required = false, defaultValue = "ALL") String state,
+                                                        @RequestParam(required = false, defaultValue = "0") Integer from,
+                                                        @RequestParam(required = false, defaultValue = "20") Integer size) {
 
-        return commonService.getAllBookingsByItemOwnerId(ownerId, state);
+        return commonService.getAllBookingsByItemOwnerId(ownerId, state, from, size);
 
     }
 

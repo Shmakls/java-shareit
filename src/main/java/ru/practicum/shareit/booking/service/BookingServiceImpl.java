@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.exceptions.BookingNotFoundException;
@@ -75,7 +76,7 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public List<BookingDto> findBookingsByBookerId(Integer bookerId, Integer from, Integer size) {
 
-        Pageable pageable = PageRequest.of(from / size, size);
+        Pageable pageable = PageRequest.of(from / size, size, Sort.by("start").descending());
 
         return bookingRepository.findBookingsByBookerId(bookerId, pageable).getContent()
                 .stream()
@@ -85,9 +86,14 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<BookingDto> findBookingsByIdItemsList(List<Integer> itemsId) {
+    public List<BookingDto> findBookingsByIdItemsList(List<Integer> itemsId, Integer from, Integer size) {
 
-        return bookingRepository.findBookingsByItemIdIn(itemsId).stream().map(bookingMapper::toDto).collect(Collectors.toList());
+        Pageable pageable = PageRequest.of(from / size, size, Sort.by("start").descending());
+
+        return bookingRepository.findBookingsByItemIdIn(itemsId, pageable).getContent()
+                .stream()
+                .map(bookingMapper::toDto)
+                .collect(Collectors.toList());
 
     }
 
