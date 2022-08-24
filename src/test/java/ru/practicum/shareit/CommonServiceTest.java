@@ -19,6 +19,7 @@ import ru.practicum.shareit.item.exceptions.ItemNotFoundException;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.requests.dto.ItemRequestDto;
 import ru.practicum.shareit.requests.exceptions.InvalidParametersException;
+import ru.practicum.shareit.requests.exceptions.ItemRequestNotFoundException;
 import ru.practicum.shareit.requests.model.ItemRequest;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.exceptions.UserNotFoundException;
@@ -468,6 +469,13 @@ class CommonServiceTest {
         );
 
         assertEquals("Такого пользователя в базе нет", userNotFoundExceptionByGetId.getMessage());
+
+        final ItemRequestNotFoundException  itemRequestNotFoundException = assertThrows(
+                ItemRequestNotFoundException.class,
+                () -> commonService.getItemRequestById(2, 99)
+        );
+
+        assertEquals("Такого запроса в базе нет", itemRequestNotFoundException.getMessage());
 
         ItemRequestDto itemRequestDtoById = commonService.getItemRequestById(2, 1);
 

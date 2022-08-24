@@ -24,19 +24,4 @@ public class ItemRequestMapper {
 
     }
 
-    public ItemRequest fromDto(ItemRequestDto itemRequestDto) {
-
-        ItemRequest itemRequest = new ItemRequest();
-
-        itemRequest.setDescription(itemRequestDto.getDescription());
-        itemRequest.setRequestorId(itemRequestDto.getRequestorId());
-
-        Optional.ofNullable(itemRequestDto.getId()).ifPresent(itemRequest::setId);
-
-        Optional.ofNullable(itemRequestDto.getCreated()).ifPresent(itemRequest::setCreated);
-
-        return itemRequest;
-
-    }
-
 }
