@@ -15,8 +15,6 @@ public class ItemDto {
 
     private Integer owner;
 
-    private Integer rentCount;
-
     private Integer requestId;
 
 }

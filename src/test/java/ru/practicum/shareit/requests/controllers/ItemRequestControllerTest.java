@@ -9,6 +9,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.practicum.shareit.common.CommonService;
+
 import ru.practicum.shareit.requests.dto.ItemRequestDto;
 import ru.practicum.shareit.requests.model.ItemRequest;
 
@@ -89,10 +90,36 @@ class ItemRequestControllerTest {
     }
 
     @Test
-    void findAllRequestsByPages() {
+    void findAllRequestsByPages() throws Exception {
+
+        when(commonService.findAllRequestsByPages(anyInt(), anyInt(), anyInt()))
+                .thenReturn(List.of(itemRequestDto1));
+
+        mvc.perform(get("/requests/all")
+                        .header("X-Sharer-User-Id", 1)
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("length()", is(1)));
+
     }
 
     @Test
-    void findRequestById() {
+    void findRequestById() throws Exception {
+
+        when(commonService.getItemRequestById(anyInt(), anyInt()))
+                .thenReturn(itemRequestDto1);
+
+        mvc.perform(get("/requests/1")
+                        .header("X-Sharer-User-Id", 1)
+                        .content(mapper.writeValueAsString(itemRequest1))
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", is(itemRequestDto1.getId()), Integer.class))
+                .andExpect(jsonPath("$.description", is(itemRequestDto1.getDescription())));
+
     }
 }

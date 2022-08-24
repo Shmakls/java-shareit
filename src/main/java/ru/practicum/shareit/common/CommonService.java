@@ -383,8 +383,6 @@ public class CommonService {
 
         return commentDto;
 
-
-
     }
 
     public ItemRequestDto addItemRequest(ItemRequest itemRequest, Integer requestorId) {
