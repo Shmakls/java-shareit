@@ -2,7 +2,7 @@ package ru.practicum.shareit.item.service;
 
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDtoForGetItems;
-import ru.practicum.shareit.item.dto.ItemDtoForItemRequestDto;
+import ru.practicum.shareit.item.dto.ItemForItemRequestDto;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 
@@ -30,5 +30,5 @@ public interface ItemService {
 
     List<Comment> getCommentsByItemId(Integer itemId);
 
-    List<ItemDtoForItemRequestDto> getItemsDtoForItemRequestDtoByRequestId(Integer requestId);
+    List<ItemForItemRequestDto> getItemsDtoForItemRequestDtoByRequestId(Integer requestId);
 }

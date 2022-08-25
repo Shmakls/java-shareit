@@ -3,7 +3,7 @@ package ru.practicum.shareit.item.dto;
 import lombok.Data;
 
 @Data
-public class ItemDtoForItemRequestDto {
+public class ItemForItemRequestDto {
 
     private Integer id;
 

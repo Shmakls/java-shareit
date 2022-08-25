@@ -19,7 +19,7 @@ import ru.practicum.shareit.item.exceptions.IncorrectItemOwnerId;
 import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
-import ru.practicum.shareit.item.dto.ItemDtoForItemRequestDto;
+import ru.practicum.shareit.item.dto.ItemForItemRequestDto;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -167,7 +167,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemDtoForItemRequestDto> getItemsDtoForItemRequestDtoByRequestId(Integer requestId) {
+    public List<ItemForItemRequestDto> getItemsDtoForItemRequestDtoByRequestId(Integer requestId) {
 
         return itemRepository.findItemsByRequestId(requestId).stream()
                 .map(itemMapper::toItemDtoForItemRequestDto)

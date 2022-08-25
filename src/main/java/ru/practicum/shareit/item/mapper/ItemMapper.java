@@ -4,7 +4,7 @@ package ru.practicum.shareit.item.mapper;
 import org.springframework.stereotype.Component;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDtoForGetItems;
-import ru.practicum.shareit.item.dto.ItemDtoForItemRequestDto;
+import ru.practicum.shareit.item.dto.ItemForItemRequestDto;
 import ru.practicum.shareit.item.model.Item;
 
 import java.util.Optional;
@@ -61,19 +61,19 @@ public class ItemMapper {
 
     }
 
-    public ItemDtoForItemRequestDto toItemDtoForItemRequestDto(Item item) {
+    public ItemForItemRequestDto toItemDtoForItemRequestDto(Item item) {
 
-        ItemDtoForItemRequestDto itemDtoForItemRequestDto = new ItemDtoForItemRequestDto();
+        ItemForItemRequestDto itemForItemRequestDto = new ItemForItemRequestDto();
 
-        itemDtoForItemRequestDto.setId(item.getId());
-        itemDtoForItemRequestDto.setName(item.getName());
-        itemDtoForItemRequestDto.setDescription(item.getDescription());
-        itemDtoForItemRequestDto.setOwnerId(item.getOwnerId());
-        itemDtoForItemRequestDto.setAvailable(item.getAvailable());
+        itemForItemRequestDto.setId(item.getId());
+        itemForItemRequestDto.setName(item.getName());
+        itemForItemRequestDto.setDescription(item.getDescription());
+        itemForItemRequestDto.setOwnerId(item.getOwnerId());
+        itemForItemRequestDto.setAvailable(item.getAvailable());
 
-        Optional.ofNullable(item.getRequestId()).ifPresent(itemDtoForItemRequestDto::setRequestId);
+        Optional.ofNullable(item.getRequestId()).ifPresent(itemForItemRequestDto::setRequestId);
 
-        return itemDtoForItemRequestDto;
+        return itemForItemRequestDto;
 
     }
 
