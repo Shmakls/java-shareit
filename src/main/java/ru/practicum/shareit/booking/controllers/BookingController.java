@@ -3,7 +3,7 @@ package ru.practicum.shareit.booking.controllers;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.CommonService;
+import ru.practicum.shareit.common.CommonService;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.model.Booking;
 import java.util.List;
@@ -42,17 +42,21 @@ public class BookingController {
 
     @GetMapping
     public List<BookingDto> getAllBookingsByBookerIdDesc(@RequestHeader("X-Sharer-User-Id") Integer bookerId,
-                                                     @RequestParam(required = false, defaultValue = "ALL") String state) {
+                                                        @RequestParam(required = false, defaultValue = "ALL") String state,
+                                                        @RequestParam(required = false, defaultValue = "0") Integer from,
+                                                        @RequestParam(required = false, defaultValue = "20") Integer size) {
 
-        return commonService.getAllBookingsByBookerIdDesc(bookerId, state);
+        return commonService.getAllBookingsByBookerIdDesc(bookerId, state, from, size);
 
     }
 
     @GetMapping("/owner")
     public List<BookingDto> getAllBookingsByItemOwnerId(@RequestHeader("X-Sharer-User-Id") Integer ownerId,
-                                                        @RequestParam(required = false, defaultValue = "ALL") String state) {
+                                                        @RequestParam(required = false, defaultValue = "ALL") String state,
+                                                        @RequestParam(required = false, defaultValue = "0") Integer from,
+                                                        @RequestParam(required = false, defaultValue = "20") Integer size) {
 
-        return commonService.getAllBookingsByItemOwnerId(ownerId, state);
+        return commonService.getAllBookingsByItemOwnerId(ownerId, state, from, size);
 
     }
 

@@ -2,7 +2,7 @@ package ru.practicum.shareit.booking.validators;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import ru.practicum.shareit.booking.exceptions.IncorrectBookingDataException;
+import ru.practicum.shareit.booking.exceptions.IncorrectBookingDateException;
 import ru.practicum.shareit.booking.model.Booking;
 
 import java.time.LocalDateTime;
@@ -33,7 +33,7 @@ public class BookingValidator {
 
         if (start.isBefore(LocalDateTime.now())) {
             log.error("BookingValidator.startValidator: Дата начала аренды {} не может быть в прошлом", start);
-            throw new IncorrectBookingDataException("Дата начала аренды не может быть в прошлом");
+            throw new IncorrectBookingDateException("Дата начала аренды не может быть в прошлом");
         }
 
     }
@@ -42,7 +42,7 @@ public class BookingValidator {
 
         if (end.isBefore(LocalDateTime.now())) {
             log.error("BookingValidator.endValidator: Дата окончания бронирования {} не может быть в прошлом", end);
-            throw new IncorrectBookingDataException("Дата окончания аренды не может быть в прошлом");
+            throw new IncorrectBookingDateException("Дата окончания аренды не может быть в прошлом");
         }
 
     }
@@ -52,7 +52,7 @@ public class BookingValidator {
         if (start.isAfter(end)) {
             log.error("BookingValidator.rentDateValidator: Дата начала бронирования {} "
                     + "не может быть позже даты окончания бронирования {}", start, end);
-            throw new IncorrectBookingDataException("Дата начала аренды не может быть после даты окончания");
+            throw new IncorrectBookingDateException("Дата начала аренды не может быть после даты окончания");
         }
 
     }

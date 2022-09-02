@@ -18,7 +18,7 @@ public class BookingErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public String incorrectBookingDataExceptionHandler(final IncorrectBookingDataException e) {
+    public String incorrectBookingDataExceptionHandler(final IncorrectBookingDateException e) {
         return "error: " + e.getMessage();
     }
 

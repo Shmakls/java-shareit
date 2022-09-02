@@ -1,4 +1,4 @@
-package ru.practicum.shareit;
+package ru.practicum.shareit.common;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +19,10 @@ import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.service.ItemService;
+import ru.practicum.shareit.requests.dto.ItemRequestDto;
+import ru.practicum.shareit.requests.exceptions.InvalidParametersException;
+import ru.practicum.shareit.requests.model.ItemRequest;
+import ru.practicum.shareit.requests.service.ItemRequestService;
 import ru.practicum.shareit.user.exceptions.UserNotFoundException;
 import ru.practicum.shareit.user.service.UserService;
 import java.time.LocalDateTime;
@@ -43,6 +47,8 @@ public class CommonService {
 
     private final CommentMapper commentMapper;
 
+    private final ItemRequestService itemRequestService;
+
     public ItemDto addItem(Integer userId, ItemDto itemDto) {
 
         if (!userService.isExists(userId) || userId == null) {
@@ -58,11 +64,11 @@ public class CommonService {
 
     }
 
-    public List<ItemDtoForGetItems> getItemsListByOwnerId(Integer userId) {
+    public List<ItemDtoForGetItems> getItemsListByOwnerId(Integer userId, Integer from, Integer size) {
 
         if (userId.equals(-1)) {
 
-            List<ItemDtoForGetItems> itemsDtoForGetItems = itemService.findAllItems();
+            List<ItemDtoForGetItems> itemsDtoForGetItems = itemService.findAllItems(from, size);
 
             for (ItemDtoForGetItems itemDtoForGetItem : itemsDtoForGetItems) {
                 setLastAndNextBooking(itemDtoForGetItem);
@@ -74,7 +80,7 @@ public class CommonService {
 
         } else {
 
-            List<Item> items = itemService.getItemsListByOwnerId(userId);
+            List<Item> items = itemService.getItemsListByOwnerId(userId, from, size);
 
             List<ItemDtoForGetItems> itemsDtoForGetItemsByOwnerId = items
                     .stream()
@@ -148,7 +154,7 @@ public class CommonService {
 
     }
 
-    public ItemDtoForGetItems getItemById(Integer itemId, Integer userId) {
+    public ItemDtoForGetItems getItemById(Integer itemId, Integer userId)  {
 
         Item item = itemService.getItemById(itemId);
 
@@ -246,23 +252,33 @@ public class CommonService {
 
     }
 
-    public List<BookingDto> getAllBookingsByBookerIdDesc(Integer bookerId, String state) {
+    public List<BookingDto> getAllBookingsByBookerIdDesc(Integer bookerId, String state, Integer from, Integer size) {
 
         if (!userService.isExists(bookerId)) {
             log.error("CommonService.getAllBookingsByBookerIdDesc: пользователя с id={} в базе нет", bookerId);
             throw new UserNotFoundException("Такого пользователя в базе нет");
         }
 
-        List<BookingDto> bookingsByBookerId = bookingService.findBookingsByBookerId(bookerId);
+        if (size < 1 || from < 0) {
+            log.error("Параметр size={} или from={} неверны", size, from);
+            throw new InvalidParametersException("Параметр size или from некорректный");
+        }
+
+        List<BookingDto> bookingsByBookerId = bookingService.findBookingsByBookerId(bookerId, from, size);
 
         return getBookingDtos(state, bookingsByBookerId);
     }
 
-    public List<BookingDto> getAllBookingsByItemOwnerId(Integer ownerId, String state) {
+    public List<BookingDto> getAllBookingsByItemOwnerId(Integer ownerId, String state, Integer from, Integer size) {
 
         if (!userService.isExists(ownerId)) {
             log.error("CommonService.getAllBookingsByItemOwnerId: пользователя с id={} в базе нет", ownerId);
             throw new UserNotFoundException("Такого пользователя в базе нет");
+        }
+
+        if (size < 1 || from < 0) {
+            log.error("Параметр size={} или from={} неверны", size, from);
+            throw new InvalidParametersException("Параметр size или from некорректный");
         }
 
         List<Item> itemsByOwnerId = itemService.getItemsListByOwnerId(ownerId);
@@ -275,7 +291,7 @@ public class CommonService {
                 .map(Item::getId)
                 .collect(Collectors.toList());
 
-        List<BookingDto> bookingsByItemOwnerId = bookingService.findBookingsByIdItemsList(itemsIdByOwnerId);
+        List<BookingDto> bookingsByItemOwnerId = bookingService.findBookingsByIdItemsList(itemsIdByOwnerId, from, size);
 
         return getBookingDtos(state, bookingsByItemOwnerId);
 
@@ -377,7 +393,63 @@ public class CommonService {
 
         return commentDto;
 
+    }
 
+    public ItemRequestDto addItemRequest(ItemRequest itemRequest, Integer requestorId) {
+
+        if (!userService.isExists(requestorId)) {
+            log.error("CommonService.addItemRequest: Пользователя с id={} в базе нет", requestorId);
+            throw new UserNotFoundException("Такого пользователя в базе нет");
+        }
+
+        return itemRequestService.addItemRequest(itemRequest, requestorId);
+
+    }
+
+    public List<ItemRequestDto> findAllRequestsByRequestorId(Integer requestorId) {
+
+        if (!userService.isExists(requestorId)) {
+            log.error("CommonService.findAllRequestsByRequestorId: Пользователя с id={} в базе нет", requestorId);
+            throw new UserNotFoundException("Такого пользователя в базе нет");
+        }
+
+        return itemRequestService.findItemRequestsByRequestorId(requestorId)
+                .stream()
+                .peek(x -> x.setItems(itemService.getItemsDtoForItemRequestDtoByRequestId(x.getId())))
+                .collect(Collectors.toList());
+
+    }
+
+    public List<ItemRequestDto> findAllRequestsByPages(Integer requestorId, Integer from, Integer size) {
+
+        if (!userService.isExists(requestorId)) {
+            log.error("CommonService.findAllRequestsByPages: Пользователя с id={} в базе нет", requestorId);
+            throw new UserNotFoundException("Такого пользователя в базе нет");
+        }
+
+        if (size < 1 || from < 0) {
+            log.error("Параметр size={} или from={} неверны", size, from);
+            throw new InvalidParametersException("Параметр size или from некорректный");
+        }
+
+        return itemRequestService.findItemRequestsByPages(requestorId, from, size).getContent()
+                .stream()
+                .peek(x -> x.setItems(itemService.getItemsDtoForItemRequestDtoByRequestId(x.getId())))
+                .collect(Collectors.toList());
+
+    }
+
+    public ItemRequestDto getItemRequestById(Integer userId, Integer requestId) {
+
+        if (!userService.isExists(userId)) {
+            log.error("CommonService.getItemRequestById: Пользователя с id={} в базе нет", userId);
+            throw new UserNotFoundException("Такого пользователя в базе нет");
+        }
+
+        ItemRequestDto itemRequestDto = itemRequestService.getItemRequestById(requestId);
+        itemRequestDto.setItems(itemService.getItemsDtoForItemRequestDtoByRequestId(requestId));
+
+        return itemRequestDto;
 
     }
 }

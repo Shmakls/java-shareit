@@ -2,6 +2,10 @@ package ru.practicum.shareit.item.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import ru.practicum.shareit.item.dto.ItemDtoForGetItems;
@@ -15,6 +19,7 @@ import ru.practicum.shareit.item.exceptions.IncorrectItemOwnerId;
 import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
+import ru.practicum.shareit.item.dto.ItemForItemRequestDto;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -85,23 +90,38 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    public List<Item> getItemsListByOwnerId(Integer userId, Integer from, Integer size) {
+
+        int page = from / size;
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
+
+        Page<Item> items = itemRepository.findItemsByOwnerId(userId, pageable);
+
+        log.info("ItemService: направляю запрос в ItemDb для получения списка вещей владельца с id={} ", userId);
+
+        return items.getContent();
+
+    }
+
+    @Override
     public List<Item> getItemsListByOwnerId(Integer userId) {
 
         log.info("ItemService: направляю запрос в ItemDb для получения списка вещей владельца с id={} ", userId);
 
         return itemRepository.findItemsByOwnerId(userId);
-
     }
 
     @Override
-    public List<ItemDto> searchItemForRentByText(String text) {
+    public List<ItemDto> searchItemForRentByText(String text, Integer from, Integer size) {
 
         if (!StringUtils.hasText(text)) {
             log.info("ItemService: текст для поиска пустой, возвращаю пустой список");
             return new ArrayList<>();
         } else {
             log.info("ItemService: направляю запрос в ItemDb для поиска вещей содержащих текст \"{}\"", text);
-            return itemRepository.searchItemForRentByText(text).stream()
+            Pageable pageable = PageRequest.of(from / size, size, Sort.by("id").ascending());
+            return itemRepository.searchItemForRentByText(text, pageable).stream()
                     .filter(x -> x.getAvailable().equals(true))
                     .map(itemMapper::toDto)
                     .collect(Collectors.toList());
@@ -109,12 +129,15 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemDtoForGetItems> findAllItems() {
+    public List<ItemDtoForGetItems> findAllItems(Integer from, Integer size) {
 
-        List<Item> items = itemRepository.findAll();
+        int page = from / size;
 
-        return items.stream().map(itemMapper::fromDtoToFindAll)
-                .collect(Collectors.toList());
+        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
+
+        Page<Item> items = itemRepository.findItemsBy(pageable);
+
+        return items.map(itemMapper::fromDtoToFindAll).getContent();
 
     }
 
@@ -143,6 +166,14 @@ public class ItemServiceImpl implements ItemService {
         return commentRepository.findCommentsByItemId(itemId);
     }
 
+    @Override
+    public List<ItemForItemRequestDto> getItemsDtoForItemRequestDtoByRequestId(Integer requestId) {
+
+        return itemRepository.findItemsByRequestId(requestId).stream()
+                .map(itemMapper::toItemDtoForItemRequestDto)
+                .collect(Collectors.toList());
+
+    }
 
     private Item itemConstructorToUpdate(Item updateItem, Item oldItem) {
 
